@@ -1,0 +1,30 @@
+import requests
+from bs4 import BeautifulSoup as bs
+URL = "https://www.genius.com/Queen-killer-queen-lyrics"
+r = requests.get(URL)
+soup = bs(r.text, "html.parser")
+lyrics_with_tags = soup.find_all('div', class_='Lyrics__Container-sc-1ynbvzw-6 jYfhrf')
+lyrics = []
+
+
+def tag_cleaner(tagged_str: str):
+    tagged_str = str(tagged_str)
+    tagged_str = tagged_str.replace("<br/>", "***")
+    flag = True
+    while flag:
+        start = tagged_str.find("<")
+        if start != -1:
+            stop = tagged_str.find(">")
+            tagged_str = tagged_str.replace(tagged_str[start:stop+1], "")
+        else:
+            flag = False
+    return list(tagged_str.split("***"))
+
+
+for elem in lyrics_with_tags:
+    l = tag_cleaner(elem)
+    for e in l:
+        lyrics.append(e)
+f = open("1.txt", "w", encoding='utf-8')
+for string in lyrics:
+    f.write(string + "\n")
