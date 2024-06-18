@@ -1,13 +1,18 @@
 import sqlite3
 import pandas as pd
+import os
+
+import options
 
 
-DB_NAME = "journal_data.db"
+
+DB_NAME = options.db_name
+outputs_dir = options.outputs_dir
 
 
 # Set up the SQLite database
 def setup_database():
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(os.path.join(outputs_dir, DB_NAME))
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS articles (

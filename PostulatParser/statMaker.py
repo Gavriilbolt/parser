@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
 import options
 
@@ -64,9 +65,9 @@ def save_table_image(scores_df, output_image_path):
 # Main function to execute the steps
 def main():
     db_name = options.db_name  # Replace with your database name
-
-    bar_chart_path = 'author_scores_chart.png'  # Output image path for bar chart
-    table_image_path = 'author_scores_table.png'  # Output image path for table
+    images_dir = options.images_dir
+    bar_chart_path = os.path.join(images_dir, 'author_scores_chart.png')  # Output image path for bar chart
+    table_image_path = os.path.join(images_dir, 'author_scores_table.png')  # Output image path for table
 
     # Step 1: Get data from database
     df = get_data_from_db(db_name)
@@ -79,6 +80,7 @@ def main():
 
     # Step 4: Save the table as an image
     save_table_image(scores_df, table_image_path)
+
 
 if __name__ == '__main__':
     main()

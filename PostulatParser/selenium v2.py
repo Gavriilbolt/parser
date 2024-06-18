@@ -4,18 +4,22 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import sqlite3
 import pandas as pd
+import os
 
 
 import options
 
 
 URL_ARCHIVE = "https://e-postulat.ru/index.php/Postulat/issue/archive"
+outputs_dir = options.outputs_dir
 db_name = options.db_name
+
+
 
 
 # Set up the SQLite database
 def connect_to_database(db_name):
-    conn = sqlite3.connect(db_name)
+    conn = sqlite3.connect(os.path.join(outputs_dir, db_name))
     return conn
 
 def get_page_source(url):
@@ -65,13 +69,13 @@ def authors_and_articles(link_names):
     return stack
 
 
-def save_to_txt(data, filename="output.txt"):
+def save_to_txt(data, filename=f"{outputs_dir}\output.txt"):
     with open(filename, "w", encoding='utf-8') as f:
         for line in data:
             f.write(";".join(line) + "\n")
 
 
-def save_to_excel(data, filename="output.xlsx"):
+def save_to_excel(data, filename=f"{outputs_dir}\output.xlsx"):
     df = pd.DataFrame(data, columns=["Выпуск", "Название статьи", "Имя автора", "Ссылка"])
     df.to_excel(filename, index=False)
 
