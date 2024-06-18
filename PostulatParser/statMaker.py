@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 import os
 
 import options
-
+outputs_dir = options.outputs_dir
 
 # Connect to the SQLite database and retrieve the data
 def get_data_from_db(db_name):
-    conn = sqlite3.connect(db_name)
+    conn = sqlite3.connect(os.path.join(outputs_dir, db_name))
     query = "SELECT author FROM articles"
     df = pd.read_sql_query(query, conn)
     conn.close()
