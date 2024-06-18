@@ -5,9 +5,18 @@ from selenium.webdriver.chrome.options import Options
 import sqlite3
 import pandas as pd
 
-URL_ARCHIVE = "https://e-postulat.ru/index.php/Postulat/issue/archive"
-DB_NAME = "journal_data.db"
 
+import options
+
+
+URL_ARCHIVE = "https://e-postulat.ru/index.php/Postulat/issue/archive"
+db_name = options.db_name
+
+
+# Set up the SQLite database
+def connect_to_database(db_name):
+    conn = sqlite3.connect(db_name)
+    return conn
 
 def get_page_source(url):
     options = Options()
@@ -70,19 +79,21 @@ def save_to_excel(data, filename="output.xlsx"):
 def insert_data_to_db(conn, data):
     cursor = conn.cursor()
     cursor.executemany('''
-        INSERT INTO articles (issue, title, author, link)
+        INSERT OR IGNORE INTO articles (issue, title, author, link)
         VALUES (?, ?, ?, ?)
     ''', data)
     conn.commit()
 
 
 def save_chooser(data):
-    print("В каком формате вы хотите сохранить данные? \n 1. В .txt (old version) \n 2. В .xlsx")
+    print("В каком формате вы хотите сохранить данные? \n 1. В .txt (old version) \n 2. В .xlsx \n 3. Загрузить данные в базу данных (SQLlight)")
     resp_ans = int(input())
     if resp_ans == 1:
         save_to_txt(data)
     elif resp_ans == 2:
         save_to_excel(data)
+    elif resp_ans == 3:
+        insert_data_to_db(connect_to_database(db_name), data)
     else:
         print("команда не распознана, даные будут сохранены в .txt")
         save_to_txt(data)

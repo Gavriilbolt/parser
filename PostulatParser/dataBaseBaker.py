@@ -15,7 +15,7 @@ def setup_database():
             issue TEXT,
             title TEXT,
             author TEXT,
-            link TEXT
+            link TEXT UNIQUE
         )
     ''')
     conn.commit()
